@@ -49,7 +49,7 @@ body {
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
 	font-size: 16px;
-	line-height: 1.9;
+	line-height: 2;
 	letter-spacing: 0;
 }
 main {
@@ -150,12 +150,78 @@ hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+.link-card {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 8.5rem;
+	gap: 1rem;
+	margin: 1.75rem 0;
+	overflow: hidden;
+	color: inherit;
+	background: var(--surface);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	box-shadow: var(--box-shadow);
+}
+.link-card:hover {
+	color: inherit;
+	text-decoration: none;
+	border-color: color-mix(in srgb, var(--accent) 45%, var(--border-color));
+}
+.link-card-body {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 0.45rem;
+	padding: 1rem 1.1rem;
+}
+.link-card-title {
+	color: rgb(var(--black));
+	font-weight: 700;
+	line-height: 1.55;
+}
+.link-card:hover .link-card-title {
+	color: var(--accent-dark);
+}
+.link-card-description {
+	display: -webkit-box;
+	overflow: hidden;
+	color: rgb(var(--gray));
+	font-size: 0.88rem;
+	line-height: 1.65;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+.link-card-host {
+	color: rgb(var(--gray));
+	font-family: var(--font-atkinson), sans-serif;
+	font-size: 0.78rem;
+}
+.link-card-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	min-height: 8rem;
+	background: var(--accent-light);
+}
+.link-card-image img {
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+	object-fit: cover;
+}
 @media (max-width: 720px) {
 	body {
 		font-size: 16px;
 	}
 	main {
 		padding: 1em;
+	}
+	.link-card {
+		grid-template-columns: 1fr;
+	}
+	.link-card-image {
+		min-height: 10rem;
+		order: -1;
 	}
 }
 
