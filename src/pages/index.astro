@@ -1,8 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
 ---
 
 <!doctype html>
@@ -12,15 +18,153 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>Kyam Blog</h1>
-			<p>
-				技術に関する記事を書いていきます。
-			</p>
-			<p>
-				<a href="/blog">記事一覧を見る →</a>
-			</p>
+		<main class="home">
+			<section class="intro" aria-labelledby="site-title">
+				<p class="eyebrow">Personal development, web technologies, and various other things.</p>
+				<h1 id="site-title">kyam.net</h1>
+				<p class="lead">
+					技術の試行錯誤、設計のメモ、あとで読み返したくなる学びを書き留める場所です。
+				</p>
+				<div class="intro-links">
+					<a href="/blog">記事一覧</a>
+					<a href="/about">このサイトについて</a>
+				</div>
+			</section>
+
+			<section class="latest" aria-labelledby="latest-title">
+				<div class="section-head">
+					<h2 id="latest-title">最新記事</h2>
+					<a href="/blog" class="all-posts">すべて見る</a>
+				</div>
+				<div class="post-list">
+					{
+						posts.map((post) => (
+							<a href={`/blog/${post.id}/`} class="post-row">
+								<time>
+									<FormattedDate date={post.data.pubDate} />
+								</time>
+								<span>
+									<strong>{post.data.title}</strong>
+									<small>{post.data.description}</small>
+								</span>
+							</a>
+						))
+					}
+				</div>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.home {
+		width: 760px;
+		padding-top: 5.5rem;
+		padding-bottom: 5rem;
+	}
+	.intro {
+		margin-bottom: 4.5rem;
+	}
+	.eyebrow {
+		margin: 0 0 1rem;
+		color: var(--accent);
+		font-family: var(--font-atkinson), sans-serif;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+	h1 {
+		margin-bottom: 1.1rem;
+		font-family: var(--font-atkinson), sans-serif;
+		font-size: clamp(3rem, 8vw, 5.2rem);
+		font-weight: 700;
+		letter-spacing: 0;
+	}
+	.lead {
+		max-width: 39rem;
+		margin: 0;
+		color: rgb(var(--gray));
+		font-size: 1.04rem;
+		line-height: 2;
+	}
+	.intro-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.4rem;
+		margin-top: 2rem;
+	}
+	.intro-links a,
+	.all-posts {
+		border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+		color: rgb(var(--gray-dark));
+		font-size: 0.9rem;
+	}
+	.intro-links a:hover,
+	.all-posts:hover {
+		border-color: var(--accent);
+		color: var(--accent-dark);
+		text-decoration: none;
+	}
+	.section-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 0.85rem;
+		border-bottom: 1px solid var(--border-color);
+	}
+	h2 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: 0;
+	}
+	.post-list {
+		display: grid;
+		gap: 0;
+	}
+	.post-row {
+		display: grid;
+		grid-template-columns: 8.5rem 1fr;
+		gap: 1.25rem;
+		padding: 1.25rem 0;
+		border-bottom: 1px solid var(--border-color);
+		color: inherit;
+	}
+	.post-row:hover {
+		text-decoration: none;
+	}
+	.post-row time {
+		color: rgb(var(--gray));
+		font-family: var(--font-atkinson), sans-serif;
+		font-size: 0.86rem;
+	}
+	.post-row strong {
+		display: block;
+		margin-bottom: 0.28rem;
+		color: rgb(var(--black));
+		font-size: 1.04rem;
+		line-height: 1.55;
+	}
+	.post-row:hover strong {
+		color: var(--accent-dark);
+	}
+	.post-row small {
+		display: block;
+		color: rgb(var(--gray));
+		font-size: 0.9rem;
+		line-height: 1.7;
+	}
+	@media (max-width: 720px) {
+		.home {
+			padding-top: 3.5rem;
+		}
+		.post-row {
+			grid-template-columns: 1fr;
+			gap: 0.35rem;
+		}
+	}
+</style>
